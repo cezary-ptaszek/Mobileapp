@@ -9,8 +9,4 @@
         android:id="@+id/change_pass"
         android:title="Zmień hasło"
         />
-    <item
-        android:id="@+id/logout"
-        android:title="Wyloguj"
-        />
 </menu>

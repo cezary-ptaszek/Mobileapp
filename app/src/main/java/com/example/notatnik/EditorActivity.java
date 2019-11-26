@@ -53,10 +53,10 @@ public class EditorActivity extends AppCompatActivity {
                 NoteActivity.notes.set(noteId, String.valueOf(s));
                 NoteActivity.arrayAdapter.notifyDataSetChanged();
 
-                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.notatnik", Context.MODE_PRIVATE);
+                SharedPreferences preferences = getApplicationContext().getSharedPreferences("com.example.notatnik", Context.MODE_PRIVATE);
 
                 HashSet<String> set = new HashSet(NoteActivity.notes);
-                sharedPreferences.edit().putStringSet("notatki", set).apply();
+                preferences.edit().putStringSet("notatki", set).apply();
             }
 
             @Override

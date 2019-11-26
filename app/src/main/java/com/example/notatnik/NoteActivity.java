@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,15 +17,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class NoteActivity extends AppCompatActivity {
 
     private Toolbar toolbarView;
     static ArrayList<String> notes = new ArrayList<>();
     static ArrayAdapter arrayAdapter;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -41,9 +45,13 @@ public class NoteActivity extends AppCompatActivity {
 
         if(item.getItemId() == R.id.add_note){
             Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
-
             startActivity(intent);
+            return true;
+        }
 
+        if(item.getItemId() == R.id.change_pass){
+            Intent intent = new Intent(getApplicationContext(), SetPassActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -61,8 +69,8 @@ public class NoteActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listView);
 
         //sprawdzenie zapisanych
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.notatnik", Context.MODE_PRIVATE);
-        HashSet<String> set = (HashSet<String>) sharedPreferences.getStringSet("notatki", null);
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("com.example.notatnik", Context.MODE_PRIVATE);
+        HashSet<String> set = (HashSet<String>) preferences.getStringSet("notatki", null);
 
         //przywracanie listy z zapisanych
         if(set == null) {
@@ -91,9 +99,9 @@ public class NoteActivity extends AppCompatActivity {
 
                 new AlertDialog.Builder(NoteActivity.this)
                         .setIcon(android.R.drawable.ic_delete)
-                        .setTitle("Uwaga")
-                        .setMessage("Czy na pewno chcesz usunąć notatke?")
-                        .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                        .setTitle("Warning")
+                        .setMessage("Are you sure you want to delete the note?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -107,11 +115,19 @@ public class NoteActivity extends AppCompatActivity {
                                 sharedPreferences.edit().putStringSet("notatki", set).apply();
                             }
                         })
-                        .setNegativeButton("Nie", null)
+                        .setNegativeButton("No", null)
                         .show();
 
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        Toast.makeText(getApplicationContext(),"Encrypted notes!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    tools:context=".MainActivity"
+    tools:context=".SetPassActivity"
     >
 
     <TextView
@@ -24,20 +24,20 @@
         />
 
     <EditText
-        android:id="@+id/login_field"
-        android:hint="Login"
-        android:drawableLeft="@drawable/ic_person_black_24dp"
+        android:id="@+id/pass_first_field"
+        android:hint="@string/new_password"
+        android:drawableLeft="@drawable/ic_lock_black_24dp"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:ems="10"
-        android:inputType="textEmailAddress"
+        android:inputType="textPassword"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="320dp"
+        android:layout_marginTop="310dp"
         />
 
     <EditText
-        android:id="@+id/pass_field"
-        android:hint="Password"
+        android:id="@+id/pass_second_field"
+        android:hint="@string/confirm_password"
         android:drawableLeft="@drawable/ic_lock_black_24dp"
         android:layout_width="250dp"
         android:layout_height="50dp"
@@ -48,10 +48,10 @@
         />
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/save_button"
         android:layout_width="250dp"
         android:layout_height="40dp"
-        android:text="LOGIN"
+        android:text="@string/save"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="450dp"
         android:background="@color/fontLoginWhite"

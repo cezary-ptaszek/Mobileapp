@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditorActivity"></activity>
+        <activity android:name=".SetPassActivity"></activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".EditorActivity" />
         <activity android:name=".NoteActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
