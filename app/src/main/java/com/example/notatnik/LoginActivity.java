@@ -39,24 +39,30 @@ public class LoginActivity extends AppCompatActivity {
                 if(pass_field.getText().toString().equals("")) Toast.makeText(getApplicationContext(), "Enter password", Toast.LENGTH_SHORT).show();
                 else if(password!=null) {
 
-                    if(!MainActivity.isEncrypted) {
-                        HashSet<String> set = (HashSet<String>) preferences.getStringSet("notatki", null);
-                        if (set != null) {
-                            HashSet<String> setDecrypted = new HashSet<>();
-                            Iterator<String> i = set.iterator();
-                            while (i.hasNext()) {
-                                setDecrypted.add(encryption.decryptOrNull(i.next()));
-                            }
-                            preferences.edit().remove("notatki");
-                            preferences.edit().putStringSet("notatki", setDecrypted).apply();
-                            Toast.makeText(getApplicationContext(), "Notes decrypted!", Toast.LENGTH_SHORT).show();
+                    HashSet<String> set = (HashSet<String>) preferences.getStringSet("notatki", null);
+
+                    if(set != null) {
+                        HashSet<String> setDecrypted = new HashSet<>();
+                        Iterator<String> i = set.iterator();
+                        while (i.hasNext()) {
+                            setDecrypted.add(encryption.decryptOrNull(i.next()));
                         }
+                        //////////////sprawdzenie
+                        Iterator<String> j = setDecrypted.iterator();
+                        while (j.hasNext()) {
+                            System.out.println(j.next());
+                        }
+                        /////////////
+                        preferences.edit().remove("notatki").apply();
+                        preferences.edit().putStringSet("notatki", setDecrypted).apply();
+                        Toast.makeText(getApplicationContext(), "Notes decrypted!", Toast.LENGTH_SHORT).show();
                     }
 
                     Toast.makeText(getApplicationContext(), "Login success", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
                     startActivity(intent);
-                }else Toast.makeText(getApplicationContext(), "Incorrect password", Toast.LENGTH_SHORT).show();
+                }
+                else Toast.makeText(getApplicationContext(), "Incorrect password", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -65,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        if(encryption!=null && MainActivity.isEncrypted==false) {
+        if(encryption!=null) {
             SharedPreferences preferences = getSharedPreferences("com.example.notatnik", Activity.MODE_PRIVATE);
             HashSet<String> set = (HashSet<String>) preferences.getStringSet("notatki", null);
             HashSet<String> setEncrypted = new HashSet<>();
@@ -74,11 +80,16 @@ public class LoginActivity extends AppCompatActivity {
                 while (i.hasNext()) {
                     setEncrypted.add(encryption.encryptOrNull(i.next()));
                 }
-                preferences.edit().remove("notatki");
+                //////////////sprawdzenie
+                Iterator<String> j = setEncrypted.iterator();
+                while (j.hasNext()) {
+                    System.out.println(j.next());
+                }
+                /////////////
+                preferences.edit().remove("notatki").apply();
                 preferences.edit().putStringSet("notatki", setEncrypted).apply();
             }
+            Toast.makeText(getApplicationContext(),"Encrypted notes!", Toast.LENGTH_SHORT).show();
         }
-
-        Toast.makeText(getApplicationContext(),"See you!", Toast.LENGTH_SHORT).show();
     }
 }

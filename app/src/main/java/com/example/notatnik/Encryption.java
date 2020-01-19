@@ -39,7 +39,7 @@ public class Encryption {
 
     private String encrypt(String data) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException {
         if (data == null) return null;
-        SecretKey secretKey = getSecretKey(hashTheKey(mBuilder.getKey()));
+        SecretKey secretKey = getSecretKey(hashTheKey(mBuilder.getKey() + mBuilder.getSalt()));
         byte[] dataBytes = data.getBytes(mBuilder.getCharsetName());
         Cipher cipher = Cipher.getInstance(mBuilder.getAlgorithm());
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, mBuilder.getIvParameterSpec(), mBuilder.getSecureRandom());
@@ -58,10 +58,10 @@ public class Encryption {
     private String decrypt(String data) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         if (data == null) return null;
         byte[] dataBytes = Base64.decode(data, mBuilder.getBase64Mode());
-        SecretKey secretKey = getSecretKey(hashTheKey(mBuilder.getKey()));
-        Cipher cipher = Cipher.getInstance(mBuilder.getAlgorithm());
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, mBuilder.getIvParameterSpec(), mBuilder.getSecureRandom());
-        byte[] dataBytesDecrypted = (cipher.doFinal(dataBytes));
+        SecretKey secretKey = getSecretKey(hashTheKey(mBuilder.getKey() + mBuilder.getSalt())); //generuje klucz z hasła //zwraca hash w base64
+        Cipher cipher = Cipher.getInstance(mBuilder.getAlgorithm()); //tryb CBC AES z Paddingiem
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, mBuilder.getIvParameterSpec(), mBuilder.getSecureRandom()); //inicjowanie algorytmu
+        byte[] dataBytesDecrypted = (cipher.doFinal(dataBytes)); //zamyka cipher i daje ostatni blok danych w tablicy zaszyfrowanej wiadomosci
         return new String(dataBytesDecrypted);
     }
 
@@ -251,6 +251,5 @@ public class Encryption {
             mDigestAlgorithm = digestAlgorithm;
             return this;
         }
-
     }
 }

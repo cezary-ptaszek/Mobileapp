@@ -2,11 +2,11 @@ package com.example.notatnik;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -52,11 +52,6 @@ public class EditorActivity extends AppCompatActivity {
 
                 NoteActivity.notes.set(noteId, String.valueOf(s));
                 NoteActivity.arrayAdapter.notifyDataSetChanged();
-
-                SharedPreferences preferences = getApplicationContext().getSharedPreferences("com.example.notatnik", Context.MODE_PRIVATE);
-
-                HashSet<String> set = new HashSet(NoteActivity.notes);
-                preferences.edit().putStringSet("notatki", set).apply();
             }
 
             @Override

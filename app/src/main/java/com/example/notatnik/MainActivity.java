@@ -9,8 +9,6 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static boolean isEncrypted = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

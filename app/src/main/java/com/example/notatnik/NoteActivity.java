@@ -69,7 +69,7 @@ public class NoteActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listView);
 
         //sprawdzenie zapisanych
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("com.example.notatnik", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("com.example.notatnik", Activity.MODE_PRIVATE);
         HashSet<String> set = (HashSet<String>) preferences.getStringSet("notatki", null);
 
         //przywracanie listy z zapisanych
@@ -77,14 +77,13 @@ public class NoteActivity extends AppCompatActivity {
             notes.add("Przykładowa notatka");
         }
         else {
-            notes = new ArrayList(set);
+            notes = new ArrayList<>(set);
         }
 
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, notes);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notes);
         listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
@@ -96,7 +95,6 @@ public class NoteActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
                 new AlertDialog.Builder(NoteActivity.this)
                         .setIcon(android.R.drawable.ic_delete)
                         .setTitle("Warning")
@@ -107,12 +105,6 @@ public class NoteActivity extends AppCompatActivity {
 
                                 notes.remove(position);
                                 arrayAdapter.notifyDataSetChanged();
-
-                                //zapisywanie na stałe
-                                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("com.example.notatnik", Context.MODE_PRIVATE);
-
-                                HashSet<String> set = new HashSet(NoteActivity.notes);
-                                sharedPreferences.edit().putStringSet("notatki", set).apply();
                             }
                         })
                         .setNegativeButton("No", null)
@@ -126,8 +118,15 @@ public class NoteActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        Toast.makeText(getApplicationContext(),"Encrypted notes!", Toast.LENGTH_SHORT).show();
+        SharedPreferences preferences = getSharedPreferences("com.example.notatnik", Activity.MODE_PRIVATE);
+        preferences.edit().remove("notatki");
+        HashSet<String> set = new HashSet<>(notes);
+        /////////sprawdzenie
+        Iterator<String> i = set.iterator();
+        while (i.hasNext()) {
+            System.out.println(i.next());
+        }
+        /////////////
+        preferences.edit().putStringSet("notatki", set).apply();
     }
 }
