@@ -49,12 +49,6 @@ public class NoteActivity extends AppCompatActivity {
             return true;
         }
 
-        if(item.getItemId() == R.id.change_pass){
-            Intent intent = new Intent(getApplicationContext(), SetPassActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
         return false;
     }
 
