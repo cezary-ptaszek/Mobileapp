@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.M)
     private void generateKey() {
-
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
             KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
@@ -120,14 +118,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean cipherInit() {
         try {
             cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+        } catch (NoSuchAlgorithmException
+                | NoSuchPaddingException e) {
             throw new RuntimeException("Failed to get Cipher", e);
         }
         try {
             keyStore.load(null);
             SecretKey key = (SecretKey) keyStore.getKey(KEY_NAME, null);
             cipher.init(Cipher.ENCRYPT_MODE, key);
-
             return true;
         } catch (KeyPermanentlyInvalidatedException e) {
             return false;

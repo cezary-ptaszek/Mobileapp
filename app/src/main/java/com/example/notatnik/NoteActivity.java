@@ -19,15 +19,25 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import javax.crypto.SecretKey;
 
 public class NoteActivity extends AppCompatActivity {
 
     private Toolbar toolbarView;
     static ArrayList<String> notes = new ArrayList<>();
     static ArrayAdapter arrayAdapter;
+
+    private Encryption encryption = null;
+    private String SALT = "vndsjf";
+    private String KEY_NAME = "AndroidKey";
 
 
     @Override
@@ -62,9 +72,44 @@ public class NoteActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.listView);
 
+
         //sprawdzenie zapisanych
         SharedPreferences preferences = getSharedPreferences("com.example.notatnik", Activity.MODE_PRIVATE);
         HashSet<String> set = (HashSet<String>) preferences.getStringSet("notatki", null);
+
+        KeyStore keyStore = null;
+        SecretKey key;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+        try {
+            assert keyStore != null;
+            key = (SecretKey) keyStore.getKey(KEY_NAME, null);
+            encryption = Encryption.getDefault(key, SALT, new byte[16]);
+
+            if (set != null) {
+                HashSet<String> setDecrypted = new HashSet<>();
+                Iterator<String> i = set.iterator();
+                while (i.hasNext()) {
+                    setDecrypted.add(encryption.decryptOrNull(i.next()));
+                }
+                //////////////sprawdzenie
+                Iterator<String> j = setDecrypted.iterator();
+                while (j.hasNext()) {
+                    System.out.println(j.next());
+                }
+                /////////////
+                preferences.edit().remove("notatki").apply();
+                preferences.edit().putStringSet("notatki", setDecrypted).apply();
+                Toast.makeText(getApplicationContext(), "Notes decrypted!", Toast.LENGTH_SHORT).show();
+            }
+        } catch (UnrecoverableKeyException
+                | NoSuchAlgorithmException
+                | KeyStoreException e) {
+            e.printStackTrace();
+        }
 
         //przywracanie listy z zapisanych
         if(set == null) {
@@ -112,15 +157,18 @@ public class NoteActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        SharedPreferences preferences = getSharedPreferences("com.example.notatnik", Activity.MODE_PRIVATE);
-        preferences.edit().remove("notatki");
-        HashSet<String> set = new HashSet<>(notes);
-        /////////sprawdzenie
-        Iterator<String> i = set.iterator();
-        while (i.hasNext()) {
-            System.out.println(i.next());
+        if(encryption!=null) {
+            SharedPreferences preferences = getSharedPreferences("com.example.notatnik", Activity.MODE_PRIVATE);
+            preferences.edit().remove("notatki").apply();
+            HashSet<String> set = new HashSet<>(notes);
+            /////////sprawdzenie
+            Iterator<String> i = set.iterator();
+            while (i.hasNext()) {
+                System.out.println(i.next());
+            }
+            /////////////
+            preferences.edit().putStringSet("notatki", set).apply();
+            Toast.makeText(getApplicationContext(),"Encrypted notes!", Toast.LENGTH_SHORT).show();
         }
-        /////////////
-        preferences.edit().putStringSet("notatki", set).apply();
     }
 }

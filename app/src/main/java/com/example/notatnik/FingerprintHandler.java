@@ -9,10 +9,12 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.widget.TextView;
 
+
 @TargetApi(Build.VERSION_CODES.M)
 public class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
 
     private Context context;
+
     public FingerprintHandler(Context context){
         this.context = context;
 
