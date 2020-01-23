@@ -28,7 +28,7 @@ public class Encryption {
         mBuilder = builder;
     }
 
-    public static Encryption getDefault(SecretKey key, String salt, byte[] iv) {
+    public static Encryption getDefault(String key, String salt, byte[] iv) {
         try {
             String stringKey = key.toString();
             return Builder.getDefaultBuilder(stringKey, salt, iv).build();

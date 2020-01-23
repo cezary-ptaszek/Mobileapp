@@ -58,6 +58,11 @@ public class NoteActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        if(item.getItemId() == R.id.change_pass){
+            Intent intent = new Intent(getApplicationContext(), SetPassActivity.class);
+            startActivity(intent);
+            return true;
+        }
 
         return false;
     }
@@ -77,38 +82,40 @@ public class NoteActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("com.example.notatnik", Activity.MODE_PRIVATE);
         HashSet<String> set = (HashSet<String>) preferences.getStringSet("notatki", null);
 
-        KeyStore keyStore = null;
-        SecretKey key;
-        try {
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        }
-        try {
-            assert keyStore != null;
-            key = (SecretKey) keyStore.getKey(KEY_NAME, null);
-            encryption = Encryption.getDefault(key, SALT, new byte[16]);
-
-            if (set != null) {
-                HashSet<String> setDecrypted = new HashSet<>();
-                Iterator<String> i = set.iterator();
-                while (i.hasNext()) {
-                    setDecrypted.add(encryption.decryptOrNull(i.next()));
-                }
-                //////////////sprawdzenie
-                Iterator<String> j = setDecrypted.iterator();
-                while (j.hasNext()) {
-                    System.out.println(j.next());
-                }
-                /////////////
-                preferences.edit().remove("notatki").apply();
-                preferences.edit().putStringSet("notatki", setDecrypted).apply();
-                Toast.makeText(getApplicationContext(), "Notes decrypted!", Toast.LENGTH_SHORT).show();
+        if(FingerprintHandler.isFingerprint) {
+            KeyStore keyStore = null;
+            SecretKey key;
+            try {
+                keyStore = KeyStore.getInstance("AndroidKeyStore");
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
             }
-        } catch (UnrecoverableKeyException
-                | NoSuchAlgorithmException
-                | KeyStoreException e) {
-            e.printStackTrace();
+            try {
+                assert keyStore != null;
+                key = (SecretKey) keyStore.getKey(KEY_NAME, null);
+                encryption = Encryption.getDefault(key.toString(), SALT, new byte[16]);
+
+                if (set != null) {
+                    HashSet<String> setDecrypted = new HashSet<>();
+                    Iterator<String> i = set.iterator();
+                    while (i.hasNext()) {
+                        setDecrypted.add(encryption.decryptOrNull(i.next()));
+                    }
+                    //////////////sprawdzenie
+                    Iterator<String> j = setDecrypted.iterator();
+                    while (j.hasNext()) {
+                        System.out.println(j.next());
+                    }
+                    /////////////
+                    preferences.edit().remove("notatki").apply();
+                    preferences.edit().putStringSet("notatki", setDecrypted).apply();
+                    Toast.makeText(getApplicationContext(), "Notes decrypted!", Toast.LENGTH_SHORT).show();
+                }
+            } catch (UnrecoverableKeyException
+                    | NoSuchAlgorithmException
+                    | KeyStoreException e) {
+                e.printStackTrace();
+            }
         }
 
         //przywracanie listy z zapisanych

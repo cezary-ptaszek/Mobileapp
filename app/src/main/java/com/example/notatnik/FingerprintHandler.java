@@ -13,6 +13,7 @@ import android.widget.TextView;
 @TargetApi(Build.VERSION_CODES.M)
 public class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
 
+    public static Boolean isFingerprint = false;
     private Context context;
 
     public FingerprintHandler(Context context){
@@ -43,6 +44,7 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     @Override
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
         this.update("");
+        isFingerprint = true;
         context.startActivity(new Intent(context.getApplicationContext(), NoteActivity.class));
     }
 

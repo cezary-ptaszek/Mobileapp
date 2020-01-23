@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.KeyguardManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private KeyguardManager keyguardManager;
     private FingerprintManager fingerprintManager;
     private Button button;
+    private Button passButton;
 
     @SuppressLint("SetTextI18n")
     private void authProcess(){
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView mFingerprintImage = (ImageView) findViewById(R.id.imageView);
         textView = (TextView) findViewById(R.id.textView);
         button = (Button) findViewById(R.id.button);
+        passButton = (Button) findViewById(R.id.pass_button);
 
         authProcess();
 
@@ -87,6 +90,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 authProcess();
+            }
+        });
+
+        passButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), PassCheck.class));
             }
         });
     }

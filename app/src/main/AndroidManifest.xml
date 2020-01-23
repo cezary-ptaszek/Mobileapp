@@ -11,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PassCheck"/>
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".SetPassActivity"/>
         <activity android:name=".EditorActivity" />
         <activity android:name=".NoteActivity" />
         <activity android:name=".MainActivity">
